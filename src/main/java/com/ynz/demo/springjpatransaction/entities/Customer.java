@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,7 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "Customers")
+@Table(name = "CUSTOMERS")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,6 +33,6 @@ public class Customer {
     @NotNull
     private String lastName;
 
-    @OneToMany
+    @OneToMany(mappedBy = "customer", targetEntity = Order.class, cascade = CascadeType.PERSIST)
     private Set<Order> orders = new HashSet<>();
 }
