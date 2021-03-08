@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
-@Table(name = "ORDER_ITEMS")
+@Table(schema = "public")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,7 +25,7 @@ public class OrderItem {
     @Setter(AccessLevel.NONE)
     private Long orderItemId;
 
-    @NotEmpty
+    @NotEmpty(message = "Content should not be empty")
     private String content;
 
     @ManyToOne

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,7 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "CUSTOMERS")
+@Table(schema = "public")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,12 +28,24 @@ public class Customer {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @NotNull
+    @NotNull(message = "Customer must have a first name.")
+    @Column(nullable = false)
     private String firstName;
 
-    @NotNull
+    @NotNull(message = "Customer must have a last name.")
+    @Column(nullable = false)
     private String lastName;
 
-    @OneToMany(mappedBy = "customer", targetEntity = Order.class, cascade = CascadeType.PERSIST)
+    @NotNull(message = "Customer must provide an email!")
+    @Column(name = "EMAIL", unique = true, nullable = false)
+    private String email;
+
+    @OneToMany(mappedBy = "customer", targetEntity = Order.class, cascade = {CascadeType.PERSIST})
     private Set<Order> orders = new HashSet<>();
+
+    public void addOrder(@NotNull Order order) {
+        orders.add(order);
+        order.setCustomer(this);
+    }
+
 }
