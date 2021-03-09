@@ -47,7 +47,7 @@ public class CustomerService {
 
     public Customer addCustomerOrder(String email, Order order) {
         Customer customer = findCustomerByEmail(email);
-        order.setCreationDateTime(OffsetDateTime.now());
+        //order.setCreationDateTime(OffsetDateTime.now());
         customer.addOrder(order);
 
         return customerRepository.save(customer);

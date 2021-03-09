@@ -31,7 +31,7 @@ class CustomerServiceTest {
         customer.setLastName("Zhao");
 
         Order order = new Order();
-        order.setCreationDateTime(OffsetDateTime.now());
+        //order.setCreationDateTime(OffsetDateTime.now());
 
         customer.addOrder(order);
         Customer persisted = customerRepository.save(customer);

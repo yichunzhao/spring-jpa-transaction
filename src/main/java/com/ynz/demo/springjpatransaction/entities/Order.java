@@ -31,9 +31,9 @@ public class Order {
     @Setter(AccessLevel.NONE)
     private Long orderId;
 
-    @Column
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSSx")
-    private OffsetDateTime creationDateTime;
+//    @Column
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSSx")
+//    private OffsetDateTime creationDateTime;
 
     @ManyToOne
     @JoinColumn(name = "FK_CUSTOMER")

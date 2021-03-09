@@ -37,7 +37,7 @@ class CustomerRepositoryTest {
         customer.setEmail("yz@hotmail.com");
 
         Order order = new Order();
-        order.setCreationDateTime(OffsetDateTime.now());
+        //order.setCreationDateTime(OffsetDateTime.now());
         customer.addOrder(order);
 
         OrderItem orderItem = new OrderItem();
@@ -46,7 +46,7 @@ class CustomerRepositoryTest {
         order.addOderItem(orderItem);
 
         Order order1 = new Order();
-        order1.setCreationDateTime(OffsetDateTime.now());
+        //order1.setCreationDateTime(OffsetDateTime.now());
         customer.addOrder(order1);
 
         OrderItem orderItem1 = new OrderItem();
@@ -69,7 +69,7 @@ class CustomerRepositoryTest {
         customer.setEmail("yz@hotmail.com");
 
         Order order = new Order();
-        order.setCreationDateTime(OffsetDateTime.now());
+        //order.setCreationDateTime(OffsetDateTime.now());
         customer.addOrder(order);
 
         OrderItem orderItem = new OrderItem();
@@ -78,7 +78,7 @@ class CustomerRepositoryTest {
         order.addOderItem(orderItem);
 
         Order order1 = new Order();
-        order1.setCreationDateTime(OffsetDateTime.now());
+        //order1.setCreationDateTime(OffsetDateTime.now());
         customer.addOrder(order1);
 
         OrderItem orderItem1 = new OrderItem();

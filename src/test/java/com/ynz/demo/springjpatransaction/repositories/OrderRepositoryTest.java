@@ -28,7 +28,7 @@ class OrderRepositoryTest {
     @Test
     void testSaveAOrder() {
         Order order = new Order();
-        order.setCreationDateTime(OffsetDateTime.now());
+        //order.setCreationDateTime(OffsetDateTime.now());
 
         OrderItem orderItem = new OrderItem();
         orderItem.setContent("dish");

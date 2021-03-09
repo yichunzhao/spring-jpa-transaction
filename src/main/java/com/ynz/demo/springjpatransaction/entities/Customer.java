@@ -30,11 +30,11 @@ public class Customer {
     @Setter(AccessLevel.NONE)
     private Long id;
 
-    @NotNull(message = "Customer must have a first name.")
+    @NotEmpty(message = "Customer must have a first name.")
     @Column(nullable = false)
     private String firstName;
 
-    @NotNull(message = "Customer must have a last name.")
+    @NotEmpty(message = "Customer must have a last name.")
     @Column(nullable = false)
     private String lastName;
 
