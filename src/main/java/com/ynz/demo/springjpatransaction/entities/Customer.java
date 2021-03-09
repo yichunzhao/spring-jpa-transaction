@@ -13,6 +13,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +38,8 @@ public class Customer {
     @Column(nullable = false)
     private String lastName;
 
-    @NotNull(message = "Customer must provide an email!")
+    @NotEmpty(message = "Customer must provide an email!")
+    @Email
     @Column(name = "EMAIL", unique = true, nullable = false)
     private String email;
 
