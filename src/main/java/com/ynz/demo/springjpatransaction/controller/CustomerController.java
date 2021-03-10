@@ -48,7 +48,7 @@ public class CustomerController {
 
     @PutMapping("{email}")
     public ResponseEntity<Customer> addCustomerOrder(@PathVariable("email") String email, @Validated @RequestBody Order order) {
-        log.info("add customer oder ...");
+        log.info("add customer an oder ...");
         return ResponseEntity.ok(customerService.addCustomerOrder(email, order));
     }
 

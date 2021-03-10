@@ -61,7 +61,6 @@ class CustomerControllerTest {
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-
     @Test
     void testFindAllCustomers() {
         Customer customer = new Customer();
@@ -141,6 +140,5 @@ class CustomerControllerTest {
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
-
 
 }
