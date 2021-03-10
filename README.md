@@ -2,11 +2,13 @@
 
 What are the benefits to create bilateral relationships? 
 
-You may easily create join on both sides, fx: a customer has many orders, then you may retrieve the corresponding customer directly on the order entity by a derived query.  
+You may easily create join on both sides, fx: a customer has many orders, then you may retrieve the corresponding customer directly on the order entity by a derived query.
+`List<Order> findByCustomerEmail(String email);`  
 It generates the following SQL query clause. 
 
 
 ````
+
 Hibernate: 
     select
         order0_.order_id as order_id1_1_,
