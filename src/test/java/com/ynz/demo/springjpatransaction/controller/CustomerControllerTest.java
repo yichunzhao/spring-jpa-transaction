@@ -2,6 +2,8 @@ package com.ynz.demo.springjpatransaction.controller;
 
 import com.ynz.demo.springjpatransaction.CustomerService;
 import com.ynz.demo.springjpatransaction.entities.Customer;
+import com.ynz.demo.springjpatransaction.entities.Order;
+import com.ynz.demo.springjpatransaction.entities.OrderItem;
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,6 +61,20 @@ class CustomerControllerTest {
                 .post(rootURI)
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @Test
+    void whenCreateCustomerWithoutLastName_ThenItReturnBadRequest() {
+        String firstName = "Mike";
+        String lastName = null;
+        Customer customer = new Customer();
+        customer.setFirstName(firstName);
+        customer.setLastName(lastName);
+        RestAssuredMockMvc
+                .when()
+                .post(rootURI, customer)
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -128,17 +144,47 @@ class CustomerControllerTest {
     }
 
     @Test
-    void whenCreateCustomerWithoutLastName_ThenItReturnBadRequest() {
+    void createOrderAndAssociateToCustomer() {
+        Customer customer = createDummyCustomer();
+        Order order = createDummyOrder();
+        customer.addOrder(order);
+
+        String email = customer.getEmail();
+
+        Mockito.when(customerService.addCustomerOrder(any(String.class), any(Order.class))).thenReturn(customer);
+
+        RestAssuredMockMvc.given()
+                .body(order)
+                .contentType(ContentType.JSON)
+                .when().put(rootURI + "/{email}", email)
+                .then()
+                .statusCode(200)
+                .body("orders.size()", is(1))
+                .body("orders[0].orderItems.size()", is(2));
+    }
+
+    private Customer createDummyCustomer() {
         String firstName = "Mike";
-        String lastName = null;
+        String lastName = "Brown";
         Customer customer = new Customer();
         customer.setFirstName(firstName);
         customer.setLastName(lastName);
-        RestAssuredMockMvc
-                .when()
-                .post(rootURI, customer)
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+        customer.setEmail("mb@hotmail.com");
+        return customer;
+    }
+
+    private Order createDummyOrder() {
+        Order order = new Order();
+
+        OrderItem orderItem = new OrderItem();
+        orderItem.setContent("iphone11");
+        order.addOderItem(orderItem);
+
+        OrderItem orderItem1 = new OrderItem();
+        orderItem1.setContent("lenovo e490");
+        order.addOderItem(orderItem1);
+
+        return order;
     }
 
 }

@@ -1,5 +1,6 @@
 package com.ynz.demo.springjpatransaction.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,5 +31,6 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name = "FK_ORDER")
+    @JsonIgnore
     private Order order;
 }
