@@ -26,3 +26,14 @@ Hibernate:
 What are the benefits to use Set instead of List in the Entity?
 
 Using a Set may improve database performance.  when you insert a new element into a list, Hibernate will remove all elements from the database first, and then re-populate all elements including the newly added element. However, as you using a Set, it only causes an insertion operation for the new element. 
+
+
+@DataJpaTest and @WebMvcTest 
+
+@DataJpaTest is designed for testing repositories, and @WebMvcTest is designed for testing controllers.
+
+They are both designed to disable full auto-configured application context, and bootstrap a tailored application context good enough for a unit test combined with Mokito.
+You need to watch out @DataJpaTest will by default auto-configure an embedded database, so if you test against a real database, then need to disable this default behaviour. 
+
+
+
