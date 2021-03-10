@@ -23,3 +23,6 @@ Hibernate:
         
 ````        
 
+What are the benefits to use Set instead of List in the Entity?
+
+Using a Set may improve database performance.  when you insert a new element into a list, Hibernate will remove all elements from the database first, and then re-populate all elements including the newly added element. However, as you using a Set, it only causes an insertion operation for the new element. 
