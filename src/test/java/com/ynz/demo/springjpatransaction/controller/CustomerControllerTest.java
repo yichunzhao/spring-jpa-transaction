@@ -2,6 +2,7 @@ package com.ynz.demo.springjpatransaction.controller;
 
 import com.ynz.demo.springjpatransaction.CustomerService;
 import com.ynz.demo.springjpatransaction.entities.Customer;
+import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Arrays;
 
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 
 
 @WebMvcTest(CustomerController.class)
@@ -33,6 +35,34 @@ class CustomerControllerTest {
     }
 
     @Test
+    void testCustomerCreation() {
+        String email = "yz@hotmail.com";
+        String firstName = "Mike";
+        String lastName = "Brown";
+        Customer customer = new Customer();
+        customer.setFirstName(firstName);
+        customer.setLastName(lastName);
+        customer.setEmail(email);
+
+        Customer persisted = new Customer();
+        persisted.setFirstName(firstName);
+        persisted.setLastName(lastName);
+        persisted.setEmail(email);
+
+        Mockito.when(customerService.createCustomer(any(Customer.class))).thenReturn(persisted);
+
+        RestAssuredMockMvc
+                .given()
+                .body(customer)
+                .contentType(ContentType.JSON)
+                .when()
+                .post(rootURI)
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+    }
+
+
+    @Test
     void testFindAllCustomers() {
         Customer customer = new Customer();
 
@@ -44,7 +74,8 @@ class CustomerControllerTest {
                 .when()
                 .get(rootURI)
                 .then()
-                .statusCode(200);
+                .statusCode(200)
+                .body("$.size()", is(1));
     }
 
     @Test
@@ -111,26 +142,5 @@ class CustomerControllerTest {
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
-    @Test
-    void testCustomerCreation() {
-        String email = "yz@hotmail.com";
-        String firstName = "Mike";
-        String lastName = "Brown";
-        Customer customer = new Customer();
-        customer.setFirstName(firstName);
-        customer.setLastName(lastName);
-        customer.setEmail(email);
-
-        Mockito.when(customerService.createCustomer(customer)).thenReturn(customer);
-
-        RestAssuredMockMvc
-                .when()
-                .post(rootURI, customer)
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .body("firstName", is(firstName))
-                .body("lastName", is("lastName"))
-                .body("email", is(email));
-    }
 
 }

@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -31,7 +29,7 @@ public class CustomerService {
     public Customer createCustomer(Customer customer) {
         log.info("create a customer.");
 
-        Customer persisted = null;
+        Customer persisted;
 
         try {
             findCustomerByEmail(customer.getEmail());

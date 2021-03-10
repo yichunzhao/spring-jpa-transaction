@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -23,9 +26,11 @@ public class CustomerController {
     private CustomerService customerService;
 
     @PostMapping
-    public ResponseEntity<Customer> createCustomer(@Validated @RequestBody Customer customer) {
+    public ResponseEntity<Void> createCustomer(@Validated @RequestBody Customer customer, UriComponentsBuilder builder) {
+        log.info("create a customer.... ");
         Customer created = customerService.createCustomer(customer);
-        return ResponseEntity.ok(created);
+        URI resultUri = builder.path("/api/customers/{email}").buildAndExpand(created.getEmail()).toUri();
+        return ResponseEntity.created(resultUri).build();
     }
 
     @GetMapping("{email}")
@@ -37,11 +42,13 @@ public class CustomerController {
 
     @GetMapping
     public ResponseEntity<Iterable<Customer>> findAllCustomer() {
+        log.info("find all customers ...");
         return ResponseEntity.ok(customerService.findAllCustomers());
     }
 
     @PutMapping("{email}")
     public ResponseEntity<Customer> addCustomerOrder(@PathVariable("email") String email, @Validated @RequestBody Order order) {
+        log.info("add customer oder ...");
         return ResponseEntity.ok(customerService.addCustomerOrder(email, order));
     }
 
