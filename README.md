@@ -36,4 +36,10 @@ They are both designed to disable full auto-configured application context, and 
 You need to watch out @DataJpaTest will by default auto-configure an embedded database, so if you test against a real database, then need to disable this default behaviour. 
 
 
+Creating database schema
+
+database schema can be created from entity definitions via the hibernate, using an external schemal.sql, or by the flyway.
+
+We can control whether the schema.sql file should be executed with the property spring.datasource.initialization-mode. The default value is embedded, meaning it will only execute for an embedded database (i.e. in our tests). If we set it to always, it will always execute. 
+
 
