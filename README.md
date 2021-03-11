@@ -36,4 +36,14 @@ They are both designed to disable full auto-configured application context, and 
 You need to watch out @DataJpaTest will by default auto-configure an embedded database, so if you test against a real database, then need to disable this default behaviour. 
 
 
+Creating database schema
 
+database schema can be created from entity definitions via the hibernate, using an external schemal.sql, or by the flyway.
+
+We can control whether the schema.sql file should be executed with the property spring.datasource.initialization-mode. The default value is embedded, meaning it will only execute for an embedded database (i.e. in our tests). If we set it to always, it will always execute. 
+
+
+The FetchType method defines two strategies for fetching data from the database:
+
+FetchType.EAGER: The persistence provider must load the related annotated field or property. This is the default behavior for @Basic, @ManyToOne, and @OneToOne annotated fields.
+FetchType.LAZY: The persistence provider should load data when it's first accessed, but can be loaded eagerly. This is the default behavior for @OneToMany, @ManyToMany and @ElementCollection-annotated fields.
