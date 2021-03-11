@@ -1,8 +1,8 @@
 package com.ynz.demo.springjpatransaction.controller;
 
-import com.ynz.demo.springjpatransaction.CustomerService;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import com.ynz.demo.springjpatransaction.entities.Order;
+import com.ynz.demo.springjpatransaction.services.CustomerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class CustomerController {
     }
 
     @PutMapping("{email}")
-    public ResponseEntity<Customer> addCustomerOrder(@PathVariable("email") String email, @Validated @RequestBody Order order) {
+    public ResponseEntity<Customer> addCustomerOrder(@PathVariable("email") String email, @Valid @RequestBody Order order) {
         log.info("add customer an oder ...");
         return ResponseEntity.ok(customerService.addCustomerOrder(email, order));
     }

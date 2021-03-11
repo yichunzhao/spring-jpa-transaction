@@ -1,8 +1,10 @@
 package com.ynz.demo.springjpatransaction.repositories;
 
+import com.ynz.demo.springjpatransaction.util.AbstractTest;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import com.ynz.demo.springjpatransaction.entities.Order;
 import com.ynz.demo.springjpatransaction.entities.OrderItem;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -22,7 +24,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class OrderRepositoryTest {
+@Slf4j
+class OrderRepositoryTest extends AbstractTest {
 
     @Autowired
     private OrderRepository orderRepository;
@@ -65,35 +68,18 @@ class OrderRepositoryTest {
     }
 
     @Test
-    void whenFindCustomerWithoutOrders_ItReturnNull() {
+    void whenFindCustomerWithoutOrders_ItReturnsEmpty() {
         Customer customer = createDummyCustomer();
         testEntityManager.persistAndFlush(customer);
+
         List<Order> found = orderRepository.findByCustomerEmail(customer.getEmail());
         assertThat(found, empty());
     }
 
-    private Order createDummyOrder() {
-        Order order = new Order();
-        //order.setCreationDateTime(OffsetDateTime.now());
-
-        OrderItem orderItem = new OrderItem();
-        orderItem.setContent("dish");
-
-        OrderItem orderItem1 = new OrderItem();
-        orderItem1.setContent("soap");
-
-        order.addOderItem(orderItem);
-        order.addOderItem(orderItem1);
-
-        return order;
-    }
-
-    private Customer createDummyCustomer() {
-        Customer customer = new Customer();
-        customer.setEmail("mb@hotmail.com");
-        customer.setFirstName("Mike");
-        customer.setLastName("Brown");
-        return customer;
+    @Test
+    void whenFindCustomerEmailIsNull_ItReturnsEmpty() {
+        List<Order> found = orderRepository.findByCustomerEmail(null);
+        assertThat(found, empty());
     }
 
 }

@@ -1,9 +1,9 @@
 package com.ynz.demo.springjpatransaction.controller;
 
-import com.ynz.demo.springjpatransaction.CustomerService;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import com.ynz.demo.springjpatransaction.entities.Order;
-import com.ynz.demo.springjpatransaction.entities.OrderItem;
+import com.ynz.demo.springjpatransaction.services.CustomerService;
+import com.ynz.demo.springjpatransaction.util.AbstractTest;
 import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,9 +20,11 @@ import java.util.Arrays;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 
-
+/**
+ * WebMvcTest init. a tailored application context, but enough only for testing controller layer.
+ */
 @WebMvcTest(CustomerController.class)
-class CustomerControllerTest {
+class CustomerControllerTest extends AbstractTest {
     private static final String rootURI = "/api/customers";
 
     @Autowired
@@ -156,35 +158,12 @@ class CustomerControllerTest {
         RestAssuredMockMvc.given()
                 .body(order)
                 .contentType(ContentType.JSON)
-                .when().put(rootURI + "/{email}", email)
+                .when()
+                .put(rootURI + "/{email}", email)
                 .then()
                 .statusCode(200)
                 .body("orders.size()", is(1))
                 .body("orders[0].orderItems.size()", is(2));
-    }
-
-    private Customer createDummyCustomer() {
-        String firstName = "Mike";
-        String lastName = "Brown";
-        Customer customer = new Customer();
-        customer.setFirstName(firstName);
-        customer.setLastName(lastName);
-        customer.setEmail("mb@hotmail.com");
-        return customer;
-    }
-
-    private Order createDummyOrder() {
-        Order order = new Order();
-
-        OrderItem orderItem = new OrderItem();
-        orderItem.setContent("iphone11");
-        order.addOderItem(orderItem);
-
-        OrderItem orderItem1 = new OrderItem();
-        orderItem1.setContent("lenovo e490");
-        order.addOderItem(orderItem1);
-
-        return order;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.ynz.demo.springjpatransaction;
+package com.ynz.demo.springjpatransaction.services;
 
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import com.ynz.demo.springjpatransaction.entities.Order;
@@ -32,7 +32,7 @@ public class CustomerService {
 
     public List<Order> findCustomerOrderByEmail(String email) {
         log.info("find a customer's order by its email.");
-        Customer customer = findCustomerByEmail(email);
+        findCustomerByEmail(email);
 
         return orderRepository.findByCustomerEmail(email);
     }
