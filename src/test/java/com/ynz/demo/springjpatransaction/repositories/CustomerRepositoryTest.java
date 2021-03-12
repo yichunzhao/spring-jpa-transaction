@@ -19,7 +19,9 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
@@ -137,10 +139,68 @@ class CustomerRepositoryTest extends AbstractTest {
         //lod customer via repository
         long id = customer.getId();
         //Optional<Customer> found = customerRepository.findById(id);
-        Optional<Customer> found =customerRepository.findByEmail(customer.getEmail());
+        Optional<Customer> found = customerRepository.findByEmail(customer.getEmail());
         assertTrue(found.isPresent());
         Set<Order> foundOrders = found.get().getOrders();
         assertThat(foundOrders, empty());
+    }
+
+    @Test
+    void usingDerivedDeleteQueryToDeleteCustomer_ItCausesExtraSQLQueries() {
+        //persist a dummy customer into database
+        Customer customer = createDummyCustomer();
+        entityManager.persistAndFlush(customer);
+
+        //using derived delete query to delete it from database.
+        customerRepository.deleteByEmail(customer.getEmail());
+        //sync. with underlying database.
+        entityManager.flush();
+
+        //the current session is still alive; detach the Customer entity;
+        entityManager.detach(customer);
+        //and then look up this customer from database again
+        Customer found = entityManager.find(Customer.class, customer.getId());
+        //assert it being removed from db
+        assertNull(found);
+    }
+
+    @Test
+    void testDeleteCustomerByEmailAgainstDB() {
+        //persist a dummy customer into database
+        Customer customer = createDummyCustomer();
+        entityManager.persistAndFlush(customer);
+
+        customerRepository.deleteCustomerByEmailPSQL(customer.getEmail());
+        entityManager.flush();
+
+        //look up this customer from database again
+        //Customer found = entityManager.find(Customer.class, customer.getId());
+
+        Optional<Customer> found = customerRepository.findByEmail(customer.getEmail());
+
+        //assert it being removed from db
+        assertFalse(found.isPresent());
+    }
+
+    @Test
+    @Disabled
+    void testDeleteCustomerByEmailAgainstDBAnother_ItGeneratesSingleSQLQuery() {
+        Customer customer = createDummyCustomer();
+        customerRepository.deleteCustomerByEmailPSQL(customer.getEmail());
+    }
+
+    @Test
+    @Disabled
+    void testDerivedQuery_DeleteCustomerByEmail_ItGeneratesTwoSQLQueries() {
+        Customer customer = createDummyCustomer();
+        //here it gen. an insert query
+        entityManager.persistAndFlush(customer);
+
+        //entity manager change the managed bean, customer, to be removed state.
+        //it generate a sql select and then delete two queries.
+        customerRepository.deleteByEmail(customer.getEmail());
+        //sync. with the underlying db, it generates a sql delete query.
+        entityManager.flush();
     }
 
 }

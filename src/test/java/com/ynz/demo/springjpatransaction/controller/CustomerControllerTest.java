@@ -22,6 +22,8 @@ import static org.mockito.ArgumentMatchers.any;
 
 /**
  * WebMvcTest init. a tailored application context, but enough only for testing controller layer.
+ *
+ * MockMvc is decorated by a RestAssuredMockMvc
  */
 @WebMvcTest(CustomerController.class)
 class CustomerControllerTest extends AbstractTest {

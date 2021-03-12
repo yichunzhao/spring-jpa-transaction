@@ -14,8 +14,10 @@ public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
     Optional<Customer> findByEmail(String email);
 
+    void deleteByEmail(String email);
+
     @Modifying
     @Query("delete from Customer c where c.email =:email")
-    void deleteCustomerByEmail(@Param("email") String email);
+    void deleteCustomerByEmailPSQL(@Param("email") String email);
 
 }
