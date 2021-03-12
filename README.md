@@ -4,7 +4,7 @@ What are the benefits to create bilateral relationships?
 
 You may easily create join on both sides, fx: a customer has many orders, then you may retrieve the corresponding customer directly on the order entity by a derived query.
 `List<Order> findByCustomerEmail(String email);`  
-It generates the following SQL query clause. So, the optimal way to delete is to delete against database directly. 
+It generates the following SQL query clause. 
 
 
 ````
@@ -47,6 +47,7 @@ Hibernate:
 
 ````
 
+So, the optimal way to delete is to delete against database directly. 
 
 What are the benefits to use Set instead of List in the Entity?
 
