@@ -170,7 +170,7 @@ class CustomerRepositoryTest extends AbstractTest {
         Customer customer = createDummyCustomer();
         entityManager.persistAndFlush(customer);
 
-        customerRepository.deleteCustomerByEmailPSQL(customer.getEmail());
+        customerRepository.deleteCustomerByEmailJPQL(customer.getEmail());
         entityManager.flush();
 
         //look up this customer from database again
@@ -186,7 +186,7 @@ class CustomerRepositoryTest extends AbstractTest {
     @Disabled
     void testDeleteCustomerByEmailAgainstDBAnother_ItGeneratesSingleSQLQuery() {
         Customer customer = createDummyCustomer();
-        customerRepository.deleteCustomerByEmailPSQL(customer.getEmail());
+        customerRepository.deleteCustomerByEmailJPQL(customer.getEmail());
     }
 
     @Test

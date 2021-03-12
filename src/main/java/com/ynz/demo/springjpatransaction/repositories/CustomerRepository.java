@@ -18,6 +18,6 @@ public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
     @Modifying
     @Query("delete from Customer c where c.email =:email")
-    void deleteCustomerByEmailPSQL(@Param("email") String email);
+    void deleteCustomerByEmailJPQL(@Param("email") String email);
 
 }
