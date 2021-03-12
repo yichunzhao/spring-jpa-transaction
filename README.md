@@ -23,6 +23,32 @@ Hibernate:
         
 ````        
 
+Using Derived delte query, generating extra SQL queries.
+
+Using a derived-delete query: `void deleteByEmail(String email)` generates extra SQL queries, for Hibernate have to load the entity from the database into persistence context, and then operate its life-cycle to 'delete'. 
+
+````
+Hibernate: 
+    select
+        customer0_.id as id1_0_,
+        customer0_.email as email2_0_,
+        customer0_.first_name as first_na3_0_,
+        customer0_.last_name as last_nam4_0_ 
+    from
+        public.customer customer0_ 
+    where
+        customer0_.email=?
+Hibernate: 
+    delete 
+    from
+        public.customer 
+    where
+        id=?
+
+````
+
+So, the optimal way to delete is to delete against database directly. 
+
 What are the benefits to use Set instead of List in the Entity?
 
 Using a Set may improve database performance.  when you insert a new element into a list, Hibernate will remove all elements from the database first, and then re-populate all elements including the newly added element. However, as you using a Set, it only causes an insertion operation for the new element. 
