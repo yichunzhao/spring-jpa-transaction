@@ -47,7 +47,14 @@ Hibernate:
 
 ````
 
-So, the optimal way to delete is to delete against database directly. 
+So, the optimal way to delete is to delete against database directly. Using native or JPQL may directly operate on the database.
+
+````
+    @Modifying
+    @Query("delete from Customer c where c.email =:email")
+    void deleteCustomerByEmailPSQL(@Param("email") String email);
+
+````
 
 What are the benefits to use Set instead of List in the Entity?
 
