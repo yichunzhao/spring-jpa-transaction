@@ -52,7 +52,7 @@ So, the optimal way to delete is to delete against database directly. Using nati
 ````
     @Modifying
     @Query("delete from Customer c where c.email =:email")
-    void deleteCustomerByEmailPSQL(@Param("email") String email);
+    void deleteCustomerByEmailJPQL(@Param("email") String email);
 
 ````
 
