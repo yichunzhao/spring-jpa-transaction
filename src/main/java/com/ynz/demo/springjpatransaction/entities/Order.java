@@ -38,7 +38,7 @@ public class Order {
     @JsonIgnore
     private Customer customer;
 
-    @OneToMany(mappedBy = "order", targetEntity = OrderItem.class, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "order", targetEntity = OrderItem.class, cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Set<OrderItem> orderItems = new HashSet<>();
 
     public void addOderItem(OrderItem item) {
