@@ -25,7 +25,7 @@ Hibernate:
 
 Using Derived delte query, generating extra SQL queries.
 
-Using a derived-delete query: `void deleteByEmail(String email)` generates extra SQL queries, for Hibernate have to load the entity from the database into persistence context, and then operate its life-cycle to 'delete'. 
+Using a derived-delete query: 'void deleteByEmail(String email)' generates extra SQL queries, for the Hibernate have to load the entity from the database into persistence context and make it become a managed bean. Afterwards, the entity manager may set the managed bean's life-cycle to become a 'removed' state. When the current transaction is committed or the current persistence context is flushed, the entity bean is synchronised with the counterparty of the database.
 
 ````
 Hibernate: 
