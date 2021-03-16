@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,9 +31,9 @@ public class Order {
     @Setter(AccessLevel.NONE)
     private Long orderId;
 
-//    @Column
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSSx")
-//    private OffsetDateTime creationDateTime;
+    @Column(name = "OffSet_Date_Time", columnDefinition = "TIME WITH TIME ZONE")
+    //@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSSx")
+    private OffsetDateTime creationDateTime;
 
     @ManyToOne
     @JoinColumn(name = "FK_CUSTOMER")

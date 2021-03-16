@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,7 +50,9 @@ public class Customer {
 
     public void addOrder(@NotNull Order order) {
         orders.add(order);
+
         order.setCustomer(this);
+        order.setCreationDateTime(OffsetDateTime.now());
     }
 
 }
