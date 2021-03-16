@@ -80,3 +80,25 @@ The FetchType method defines two strategies for fetching data from the database:
 
 FetchType.EAGER: The persistence provider must load the related annotated field or property. This is the default behavior for @Basic, @ManyToOne, and @OneToOne annotated fields.
 FetchType.LAZY: The persistence provider should load data when it's first accessed, but can be loaded eagerly. This is the default behavior for @OneToMany, @ManyToMany and @ElementCollection-annotated fields.
+
+Mapping Java 8 DateTime To Database
+
+Java 8 has introduced the java.time packages, and the JDBC 4.2 API added support for the additional SQL types TIMESTAMP WITH TIME ZONE and TIME WITH TIME ZONE.
+
+We can now map the JDBC Types TIME, DATE, and TIMESTAMP to the java.time types – LocalTime, LocalDate, and LocalDateTime:
+
+@Column(name = "local_time", columnDefinition = "TIME")
+private LocalTime localTime;
+
+@Column(name = "local_date", columnDefinition = "DATE")
+private LocalDate localDate;
+
+@Column(name = "local_date_time", columnDefinition = "TIMESTAMP")
+private LocalDateTime localDateTime;
+Additionally, we have support for the offset local timezone to UTC through the OffsetTime and OffsetDateTime classes:
+
+@Column(name = "offset_time", columnDefinition = "TIME WITH TIME ZONE")
+private OffsetTime offsetTime;
+
+@Column(name = "offset_date_time", columnDefinition = "TIMESTAMP WITH TIME ZONE")
+private OffsetDateTime offsetDateTime;
