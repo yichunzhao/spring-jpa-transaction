@@ -25,9 +25,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -125,27 +125,55 @@ class CustomerRepositoryTest extends AbstractTest {
     }
 
     /**
-     * verify one to many, by default is a lazy loading. one to many default fetch type is lazy
-     * this is not approved.
+     * OneToMany default fetch type = lazy; and ManyToOne default fetch type = lazy
+     * <p>
+     * when accessing orders of customer; it generates a query clause to select the orders of this customer.
      */
     @Test
     @Disabled
-    void givenCustomerOrder_OneToMany_CustomerReturnsEmptyOrders() {
+    void givenCustomerOrder_OneToMany_WhenAccessingCustomerOrderReturnsOrders() {
+        log.info("approving lazy loading orders: ");
         Customer customer = createDummyCustomer();
         Order order = createDummyOrder();
         customer.addOrder(order);
 
         Customer persisted = entityManager.persistAndFlush(customer);
         assertNotNull(persisted);
+
         Set<Order> persistedCustomerOrders = persisted.getOrders();
         assertThat(persistedCustomerOrders, hasSize(1));
 
+        entityManager.detach(customer);
+
         //lod customer via repository
-        long id = customer.getId();
+        log.info("via repository find customer by its Email: it generates a select query ");
         Optional<Customer> found = customerRepository.findByEmail(customer.getEmail());
+
         assertTrue(found.isPresent());
+
+        log.info("accessing order via found Customer: as accessing orders inside the customer");
+        log.info("accessing order via found Customer: it generates another query to select orders");
         Set<Order> foundOrders = found.get().getOrders();
-        assertThat(foundOrders, empty());
+        assertThat(foundOrders, is(not(empty())));
+        log.info("accessing order via found Customer: due to within the same transaction scope");
+    }
+
+    @Test
+    @Disabled
+    void givenCustomer_OneToMany_CustomerReturnsEmptyOrders() {
+        log.info("approving lazy loading orders: ");
+        Customer customer = createDummyCustomer();
+
+        Customer persisted = entityManager.persistAndFlush(customer);
+        assertNotNull(persisted);
+
+        entityManager.detach(customer);
+
+        //load customer via repository
+        log.info("via repository find customer by its Email: ");
+        Optional<Customer> found = customerRepository.findByEmail(customer.getEmail());
+
+        assertTrue(found.isPresent());
     }
 
     @Test
@@ -168,21 +196,24 @@ class CustomerRepositoryTest extends AbstractTest {
     }
 
     @Test
+    @DisplayName("delete directly against the database")
     void testDeleteCustomerByEmailAgainstDB() {
+        log.info("test delete a customer against database directly");
         //persist a dummy customer into database
         Customer customer = createDummyCustomer();
         entityManager.persistAndFlush(customer);
 
+        //delete directly against the database.
         customerRepository.deleteCustomerByEmailJPQL(customer.getEmail());
-        entityManager.flush();
+
+        //detach entity customer bean from the current persistent context
+        entityManager.detach(customer);
 
         //look up this customer from database again
-        //Customer found = entityManager.find(Customer.class, customer.getId());
-
-        Optional<Customer> found = customerRepository.findByEmail(customer.getEmail());
+        Customer found = entityManager.find(Customer.class, customer.getId());
 
         //assert it being removed from db
-        assertFalse(found.isPresent());
+        assertNull(found);
     }
 
     @Test
@@ -215,13 +246,16 @@ class CustomerRepositoryTest extends AbstractTest {
         Order order = createDummyOrder();
 
         customer.addOrder(order);
+        log.info("entity manager persisting customer entity: ");
         entityManager.persistAndFlush(customer);
+
+        log.info("entity manager detach customer entity: ");
         entityManager.detach(customer);
 
-        Optional<Customer> found = customerRepository.findByEmail(customer.getEmail());
+        log.info("entity manager find customer entity by its P-Key: ");
+        Customer found = entityManager.find(Customer.class, customer.getId());
 
-        Customer persisted = found.get();
-        List<Order> persistedOrders = new ArrayList<>(persisted.getOrders());
+        List<Order> persistedOrders = new ArrayList<>(found.getOrders());
         Order persistedOrder = persistedOrders.get(0);
         OffsetDateTime creationTimeStamp = persistedOrder.getCreationDateTime();
 
