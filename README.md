@@ -112,3 +112,20 @@ The null-check looks like if (param == null) throw new NullPointerException("par
 If a null-check is already present at the top, no additional null-check will be generated. 
 
 When lombok generates a null-check if statement, by default, a java.lang.NullPointerException will be thrown with 'field name is marked non-null but is null' as the exception message.
+
+Open session in View
+
+To better understand the role of Open Session in View (OSIV), let's suppose we have an incoming request:
+
+Spring opens a new Hibernate Session at the beginning of the request. These Sessions are not necessarily connected to the database.
+Every time the application needs a Session, it will reuse the already existing one.
+At the end of the request, the same interceptor closes that Session.
+
+By default, OSIV is active in Spring Boot applications. Despite that, as of Spring Boot 2.0, it warns us of the fact that it's enabled at application startup if we haven't configured it explicitly:
+
+spring.jpa.open-in-view is enabled by default. Therefore, database 
+queries may be performed during view rendering.Explicitly configure 
+spring.jpa.open-in-view to disable this warning
+Anyway, we can disable the OSIV by using the spring.jpa.open-in-view configuration property:
+
+spring.jpa.open-in-view=false
