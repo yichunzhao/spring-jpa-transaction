@@ -129,3 +129,7 @@ spring.jpa.open-in-view to disable this warning
 Anyway, we can disable the OSIV by using the spring.jpa.open-in-view configuration property:
 
 spring.jpa.open-in-view=false
+
+Unfortunately, exhausting the connection pool is not the only OSIV-related performance issue.
+
+Since the Session is open for the entire request lifecycle, some property navigations may trigger a few more unwanted queries outside of the transactional context. It's even possible to end up with n+1 select problem, and the worst news is that we may not notice this until production.
