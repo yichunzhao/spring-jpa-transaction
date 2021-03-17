@@ -3,6 +3,7 @@ package com.ynz.demo.springjpatransaction.entities;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
@@ -15,7 +16,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -47,7 +47,7 @@ public class Customer {
     @OneToMany(mappedBy = "customer", targetEntity = Order.class, cascade = {CascadeType.PERSIST})
     private Set<Order> orders = new HashSet<>();
 
-    public void addOrder(@NotNull Order order) {
+    public void addOrder(@NonNull Order order) {
         orders.add(order);
 
         order.setCustomer(this);

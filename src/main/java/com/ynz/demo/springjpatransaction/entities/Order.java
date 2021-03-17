@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
@@ -43,7 +44,7 @@ public class Order {
     @OneToMany(mappedBy = "order", targetEntity = OrderItem.class, cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Set<OrderItem> orderItems = new HashSet<>();
 
-    public void addOderItem(OrderItem item) {
+    public void addOderItem(@NonNull OrderItem item) {
         orderItems.add(item);
         item.setOrder(this);
     }
