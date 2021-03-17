@@ -122,9 +122,11 @@ Every time the application needs a Session, it will reuse the already existing o
 At the end of the request, the same interceptor closes that Session.
 
 By default, OSIV is active in Spring Boot applications. Despite that, as of Spring Boot 2.0, it warns us of the fact that it's enabled at application startup if we haven't configured it explicitly:
+````
+2021-03-17 16:28:34.971  WARN 16756 --- [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
 
-spring.jpa.open-in-view is enabled by default. Therefore, database 
-queries may be performed during view rendering.Explicitly configure 
+````
+Explicitly configure 
 spring.jpa.open-in-view to disable this warning
 Anyway, we can disable the OSIV by using the spring.jpa.open-in-view configuration property:
 
