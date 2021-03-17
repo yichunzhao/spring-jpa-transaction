@@ -104,3 +104,9 @@ private OffsetTime offsetTime;
 @Column(name = "offset_date_time", columnDefinition = "TIMESTAMP WITH TIME ZONE")
 private OffsetDateTime offsetDateTime;
 ````
+
+Lombok null-check @NonNull
+
+The null-check looks like if (param == null) throw new NullPointerException("param is marked @NonNull but is null"); and will be inserted at the very top of your method. For constructors, the null-check will be inserted immediately following any explicit this() or super() calls.
+
+If a null-check is already present at the top, no additional null-check will be generated.
