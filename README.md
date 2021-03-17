@@ -133,3 +133,7 @@ spring.jpa.open-in-view=false
 Unfortunately, exhausting the connection pool is not the only OSIV-related performance issue.
 
 Since the Session is open for the entire request lifecycle, some property navigations may trigger a few more unwanted queries outside of the transactional context. It's even possible to end up with n+1 select problem, and the worst news is that we may not notice this until production.
+
+If we're developing a simple CRUD service, it might make sense to use the OSIV, as we may never encounter those performance issues.
+
+On the other hand, if we find ourselves calling a lot of remote services or there is so much going on outside of our transactional contexts, it's highly recommended to disable the OSIV altogether. 
