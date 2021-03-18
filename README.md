@@ -109,4 +109,39 @@ Lombok null-check @NonNull
 
 The null-check looks like if (param == null) throw new NullPointerException("param is marked @NonNull but is null"); and will be inserted at the very top of your method. For constructors, the null-check will be inserted immediately following any explicit this() or super() calls.
 
-If a null-check is already present at the top, no additional null-check will be generated.
+If a null-check is already present at the top, no additional null-check will be generated. 
+
+When lombok generates a null-check if statement, by default, a java.lang.NullPointerException will be thrown with 'field name is marked non-null but is null' as the exception message.
+
+Open session in View
+
+To better understand the role of Open Session in View (OSIV), let's suppose we have an incoming request:
+
+Spring opens a new Hibernate Session at the beginning of the request. These Sessions are not necessarily connected to the database.
+Every time the application needs a Session, it will reuse the already existing one.
+At the end of the request, the same interceptor closes that Session.
+
+By default, OSIV is active in Spring Boot applications. Despite that, as of Spring Boot 2.0, it warns us of the fact that it's enabled at application startup if we haven't configured it explicitly:
+````
+2021-03-17 16:28:34.971  WARN 16756 --- [  restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+
+````
+Explicitly configure 
+spring.jpa.open-in-view to disable this warning
+Anyway, we can disable the OSIV by using the spring.jpa.open-in-view configuration property:
+
+spring.jpa.open-in-view=false
+
+Unfortunately, exhausting the connection pool is not the only OSIV-related performance issue.
+
+Since the Session is open for the entire request lifecycle, some property navigations may trigger a few more unwanted queries outside of the transactional context. It's even possible to end up with n+1 select problem, and the worst news is that we may not notice this until production.
+
+If we're developing a simple CRUD service, it might make sense to use the OSIV, as we may never encounter those performance issues.
+
+On the other hand, if we find ourselves calling a lot of remote services or there is so much going on outside of our transactional contexts, it's highly recommended to disable the OSIV altogether. 
+
+
+JPA default fetch type
+
+to-many default fetch type = lazy; one-one default fetch type = eager; 
+
