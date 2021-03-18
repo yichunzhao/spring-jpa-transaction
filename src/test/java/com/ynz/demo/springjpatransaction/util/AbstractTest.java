@@ -8,7 +8,6 @@ public abstract class AbstractTest {
 
     protected Order createDummyOrder() {
         Order order = new Order();
-        //order.setCreationDateTime(OffsetDateTime.now());
 
         OrderItem orderItem = new OrderItem();
         orderItem.setContent("dish");

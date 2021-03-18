@@ -5,6 +5,7 @@ import com.ynz.demo.springjpatransaction.entities.Order;
 import com.ynz.demo.springjpatransaction.entities.OrderItem;
 import com.ynz.demo.springjpatransaction.util.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -98,14 +99,33 @@ class CustomerRepositoryTest extends AbstractTest {
         Customer persisted = entityManager.persistAndFlush(customer);
         String email = persisted.getEmail();
 
+        entityManager.detach(customer);
+
+        log.info("invoking customerRepository.findByEmail(email)");
         Optional<Customer> found = customerRepository.findByEmail(email);
 
         assertAll(
                 () -> assertTrue(found.isPresent()),
-                () -> assertThat(found.get().getOrders(), hasSize(2)),
+                //() -> assertThat(found.get().getOrders(), hasSize(2)),
                 () -> assertThat(found.get().getFirstName(), is("Mike")),
                 () -> assertThat(found.get().getLastName(), is("Brown"))
         );
+    }
+
+    @Test
+    @Disabled
+    void testEntityMangerFetchCustomer_ThenByDefaultFetchLazy() {
+        Customer customer = createDummyCustomer();
+        Order order = createDummyOrder();
+        customer.addOrder(order);
+
+        entityManager.persistAndFlush(customer);
+        entityManager.detach(customer);
+
+        log.info("invoking em find the customer");
+        Customer found = entityManager.find(Customer.class, customer.getId());
+        assertThat(found, is(Matchers.notNullValue()));
+        //assertThat(found.getOrders(), hasSize(1));
     }
 
     @Test

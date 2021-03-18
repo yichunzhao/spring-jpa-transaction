@@ -14,6 +14,9 @@ public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
     Optional<Customer> findByEmail(String email);
 
+    @Query("select c from Customer c where c.email =:email")
+    Optional<Customer> findCustomerByEmailJPQL(@Param("email") String email);
+
     void deleteByEmail(String email);
 
     @Modifying

@@ -44,7 +44,7 @@ public class Customer {
     @Column(name = "EMAIL", unique = true, nullable = false)
     private String email;
 
-    @OneToMany(mappedBy = "customer", targetEntity = Order.class, cascade = {CascadeType.PERSIST})
+    @OneToMany(mappedBy = "customer", targetEntity = Order.class, cascade = {CascadeType.PERSIST, CascadeType.DETACH})
     private Set<Order> orders = new HashSet<>();
 
     public void addOrder(@NonNull Order order) {
