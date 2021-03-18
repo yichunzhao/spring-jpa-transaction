@@ -139,3 +139,9 @@ Since the Session is open for the entire request lifecycle, some property naviga
 If we're developing a simple CRUD service, it might make sense to use the OSIV, as we may never encounter those performance issues.
 
 On the other hand, if we find ourselves calling a lot of remote services or there is so much going on outside of our transactional contexts, it's highly recommended to disable the OSIV altogether. 
+
+
+JPA default fetch type
+
+to-many default fetch type = lazy; one-one default fetch type = eager; 
+
