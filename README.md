@@ -143,5 +143,5 @@ On the other hand, if we find ourselves calling a lot of remote services or ther
 
 JPA default fetch type
 
-to-many default fetch type = lazy; one-one default fetch type = eager; 
+to-many (one to many and many to many) default fetch type = lazy; one-one (one to one, and many to one) default fetch type = eager; 
 
