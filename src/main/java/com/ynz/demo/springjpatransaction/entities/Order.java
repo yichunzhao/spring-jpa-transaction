@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(schema = "public")
@@ -33,7 +34,6 @@ public class Order {
     private Long orderId;
 
     @Column(name = "OffSet_Date_Time", columnDefinition = "TIME WITH TIME ZONE")
-    //@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss.SSSx")
     private OffsetDateTime creationDateTime;
 
     @ManyToOne
@@ -41,8 +41,10 @@ public class Order {
     @JsonIgnore
     private Customer customer;
 
-    @OneToMany(mappedBy = "order", targetEntity = OrderItem.class, cascade = {CascadeType.PERSIST,CascadeType.DETACH}, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", targetEntity = OrderItem.class, cascade = {CascadeType.PERSIST, CascadeType.DETACH}, orphanRemoval = true)
     private Set<OrderItem> orderItems = new HashSet<>();
+
+    private UUID givenOrderId;
 
     public void addOderItem(@NonNull OrderItem item) {
         orderItems.add(item);

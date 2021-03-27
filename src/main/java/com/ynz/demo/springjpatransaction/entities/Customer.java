@@ -19,6 +19,7 @@ import javax.validation.constraints.NotEmpty;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(schema = "public")
@@ -51,6 +52,7 @@ public class Customer {
         orders.add(order);
 
         order.setCustomer(this);
+        order.setGivenOrderId(UUID.randomUUID());
         order.setCreationDateTime(OffsetDateTime.now());
     }
 
