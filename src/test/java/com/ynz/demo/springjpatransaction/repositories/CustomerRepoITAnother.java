@@ -14,7 +14,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest
-@Sql("classpath:testdata.sql")
+@Sql(value = "classpath:testdata.sql")
+@Sql(value = "classpath:deleteTestdata.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @Slf4j
 public class CustomerRepoITAnother {
 
