@@ -6,7 +6,6 @@ import com.ynz.demo.springjpatransaction.entities.Order;
 import com.ynz.demo.springjpatransaction.entities.OrderItem;
 import com.ynz.demo.springjpatransaction.util.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -124,7 +123,7 @@ class CustomerRepositoryTest extends AbstractTest {
 
         log.info("invoking em find the customer");
         Customer found = entityManager.find(Customer.class, customer.getId());
-        assertThat(found, is(Matchers.notNullValue()));
+        assertThat(found, is(notNullValue()));
         //assertThat(found.getOrders(), hasSize(1));
     }
 
@@ -179,9 +178,8 @@ class CustomerRepositoryTest extends AbstractTest {
     }
 
     @Test
-    @Disabled
-    void givenCustomer_OneToMany_CustomerReturnsEmptyOrders() {
-        log.info("approving lazy loading orders: ");
+    void testDtoProjection_ByFindByEmailDerivedQuery() {
+        log.info("class Dto project from a derived query...");
         Customer customer = createDummyCustomer();
 
         Customer persisted = entityManager.persistAndFlush(customer);
@@ -189,11 +187,21 @@ class CustomerRepositoryTest extends AbstractTest {
 
         entityManager.detach(customer);
 
-        //load customer via repository
+        //projecting Customer entity to CustomerDto via the derived query
         log.info("via repository find customer by its Email: ");
         Optional<CustomerDto> found = customerRepository.findByEmail(customer.getEmail());
 
-        assertTrue(found.isPresent());
+        assertAll(
+                () -> assertNotNull(found),
+                () -> {
+                    CustomerDto dto = found.get();
+                    assertThat(dto.getFirstName(), is("Mike"));
+                },
+                () -> {
+                    CustomerDto dto = found.get();
+                    assertThat(dto.getLastName(), is("Brown"));
+                }
+        );
     }
 
     @Test
