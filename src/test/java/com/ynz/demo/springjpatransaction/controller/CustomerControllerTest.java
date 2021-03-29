@@ -1,5 +1,6 @@
 package com.ynz.demo.springjpatransaction.controller;
 
+import com.ynz.demo.springjpatransaction.dto.CustomerDto;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import com.ynz.demo.springjpatransaction.entities.Order;
 import com.ynz.demo.springjpatransaction.services.CustomerService;
@@ -22,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 /**
  * WebMvcTest init. a tailored application context, but enough only for testing controller layer.
- *
+ * <p>
  * MockMvc is decorated by a RestAssuredMockMvc
  */
 @WebMvcTest(CustomerController.class)
@@ -102,10 +103,7 @@ class CustomerControllerTest extends AbstractTest {
         String email = "yz@hotmail.com";
         String firstName = "Mike";
         String lastName = "Brown";
-        Customer customer = new Customer();
-        customer.setEmail(email);
-        customer.setFirstName(firstName);
-        customer.setLastName(lastName);
+        CustomerDto customer = new CustomerDto(firstName, lastName, email);
 
         Mockito.when(customerService.findCustomerByEmail(email)).thenReturn(customer);
 
@@ -113,7 +111,7 @@ class CustomerControllerTest extends AbstractTest {
                 .when()
                 .get(rootURI + "/" + email)
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.FOUND.value())
                 .body("email", is(email))
                 .body("firstName", is(firstName))
                 .body("lastName", is(lastName));

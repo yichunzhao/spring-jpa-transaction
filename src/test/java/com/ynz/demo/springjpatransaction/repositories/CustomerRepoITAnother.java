@@ -1,5 +1,6 @@
 package com.ynz.demo.springjpatransaction.repositories;
 
+import com.ynz.demo.springjpatransaction.dto.CustomerDto;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.LazyInitializationException;
@@ -38,7 +39,7 @@ public class CustomerRepoITAnother {
     @Test
     void givenCustomerInDB_FindByItsEmail() {
         log.info("test find customer by its email against db");
-        Optional<Customer> found = customerRepository.findByEmail("mb@hotmail.com");
+        Optional<CustomerDto> found = customerRepository.findByEmail("mb@hotmail.com");
         assertThat(found.isPresent(), is(true));
     }
 

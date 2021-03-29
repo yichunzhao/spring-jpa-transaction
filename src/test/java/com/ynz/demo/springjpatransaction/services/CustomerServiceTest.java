@@ -1,5 +1,6 @@
 package com.ynz.demo.springjpatransaction.services;
 
+import com.ynz.demo.springjpatransaction.dto.CustomerDto;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import com.ynz.demo.springjpatransaction.entities.Order;
 import com.ynz.demo.springjpatransaction.exceptions.NoSuchCustomerException;
@@ -7,6 +8,7 @@ import com.ynz.demo.springjpatransaction.util.AbstractTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -14,11 +16,13 @@ import javax.persistence.EntityManager;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @SpringBootTest
-class ser extends AbstractTest {
+class CustomerServiceTest extends AbstractTest {
     @Autowired
     private CustomerService customerService;
 
@@ -43,6 +47,21 @@ class ser extends AbstractTest {
 
         Customer afterOrderAdded = customerService.addCustomerOrder(customer.getEmail(), order);
         assertThat(afterOrderAdded.getOrders(), hasSize(1));
+    }
+
+    @Test
+    @Sql("classpath:testdata.sql")
+    @Sql(value = "classpath:deleteTestData.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    void whenGivenDataInDB_FindCustomerByEmail() {
+        String targetEmail = "mb@hotmail.com";
+        CustomerDto found = customerService.findCustomerByEmail(targetEmail);
+        String firstName = found.getFirstName();
+        String lastName = found.getLastName();
+
+        assertAll(
+                () -> assertThat(firstName, is("Mike")),
+                () -> assertThat(lastName, is("Brown"))
+        );
     }
 
 }

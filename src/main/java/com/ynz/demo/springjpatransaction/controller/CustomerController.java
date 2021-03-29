@@ -1,5 +1,6 @@
 package com.ynz.demo.springjpatransaction.controller;
 
+import com.ynz.demo.springjpatransaction.dto.CustomerDto;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import com.ynz.demo.springjpatransaction.entities.Order;
 import com.ynz.demo.springjpatransaction.services.CustomerService;
@@ -34,14 +35,15 @@ public class CustomerController {
         log.info("create a customer.... ");
         Customer created = customerService.createCustomer(customer);
         URI resultUri = builder.path("/api/customers/{email}").buildAndExpand(created.getEmail()).toUri();
+
         return ResponseEntity.created(resultUri).build();
     }
 
     @GetMapping("{email}")
-    public ResponseEntity<Customer> findCustomerByEmail(@PathVariable("email") String email) {
+    public ResponseEntity<CustomerDto> findCustomerByEmail(@PathVariable("email") String email) {
         log.info("find a customer whose Email is " + email);
-        Customer customer = customerService.findCustomerByEmail(email);
-        return ResponseEntity.ok(customer);
+        CustomerDto customerDto = customerService.findCustomerByEmail(email);
+        return ResponseEntity.status(HttpStatus.FOUND).body(customerDto);
     }
 
     @GetMapping(value = "{email}/orders")

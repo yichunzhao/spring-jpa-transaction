@@ -1,5 +1,6 @@
 package com.ynz.demo.springjpatransaction.repositories;
 
+import com.ynz.demo.springjpatransaction.dto.CustomerDto;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import com.ynz.demo.springjpatransaction.entities.Order;
 import com.ynz.demo.springjpatransaction.entities.OrderItem;
@@ -102,11 +103,10 @@ class CustomerRepositoryTest extends AbstractTest {
         entityManager.detach(customer);
 
         log.info("invoking customerRepository.findByEmail(email)");
-        Optional<Customer> found = customerRepository.findByEmail(email);
+        Optional<CustomerDto> found = customerRepository.findByEmail(email);
 
         assertAll(
                 () -> assertTrue(found.isPresent()),
-                //() -> assertThat(found.get().getOrders(), hasSize(2)),
                 () -> assertThat(found.get().getFirstName(), is("Mike")),
                 () -> assertThat(found.get().getLastName(), is("Brown"))
         );
@@ -167,7 +167,7 @@ class CustomerRepositoryTest extends AbstractTest {
 
         //lod customer via repository
         log.info("via repository find customer by its Email: it generates a select query ");
-        Optional<Customer> found = customerRepository.findByEmail(customer.getEmail());
+        Optional<Customer> found = customerRepository.findCustomerByEmailJPQL(customer.getEmail());
 
         assertTrue(found.isPresent());
 
@@ -191,7 +191,7 @@ class CustomerRepositoryTest extends AbstractTest {
 
         //load customer via repository
         log.info("via repository find customer by its Email: ");
-        Optional<Customer> found = customerRepository.findByEmail(customer.getEmail());
+        Optional<CustomerDto> found = customerRepository.findByEmail(customer.getEmail());
 
         assertTrue(found.isPresent());
     }
@@ -259,6 +259,7 @@ class CustomerRepositoryTest extends AbstractTest {
 
     @Test
     @DisplayName("persisting Date_Time with Zone")
+    @Disabled
     void whenCreatingOrderForCustomer_OrderContainsTimeStampWithZone() {
         log.info("test order creation timestamp");
 

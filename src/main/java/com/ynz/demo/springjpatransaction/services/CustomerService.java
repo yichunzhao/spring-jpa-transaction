@@ -1,5 +1,6 @@
 package com.ynz.demo.springjpatransaction.services;
 
+import com.ynz.demo.springjpatransaction.dto.CustomerDto;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import com.ynz.demo.springjpatransaction.entities.Order;
 import com.ynz.demo.springjpatransaction.exceptions.DuplicatedCustomerException;
@@ -9,6 +10,8 @@ import com.ynz.demo.springjpatransaction.repositories.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -24,7 +27,8 @@ public class CustomerService {
         return customerRepository.findAll();
     }
 
-    public Customer findCustomerByEmail(String email) {
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true, noRollbackFor = Exception.class)
+    public CustomerDto findCustomerByEmail(String email) {
         log.info("find a customer by email.");
         return customerRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchCustomerException(new StringBuilder("Customer with email : ")
@@ -56,8 +60,15 @@ public class CustomerService {
     }
 
     public Customer addCustomerOrder(String email, Order order) {
-        Customer customer = findCustomerByEmail(email);
+        log.info("add a customer an order.");
+        CustomerDto customerDto = findCustomerByEmail(email);
+
         order.setCreationDateTime(OffsetDateTime.now());
+
+        Customer customer = new Customer();
+        customer.setFirstName(customerDto.getFirstName());
+        customer.setLastName(customerDto.getLastName());
+        customer.setEmail(customerDto.getEmail());
         customer.addOrder(order);
 
         return customerRepository.save(customer);

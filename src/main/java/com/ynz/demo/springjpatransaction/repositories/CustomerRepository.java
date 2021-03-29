@@ -1,5 +1,6 @@
 package com.ynz.demo.springjpatransaction.repositories;
 
+import com.ynz.demo.springjpatransaction.dto.CustomerDto;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
-    Optional<Customer> findByEmail(String email);
+    Optional<CustomerDto> findByEmail(String email);
 
     @Query("select c from Customer c where c.email =:email")
     Optional<Customer> findCustomerByEmailJPQL(@Param("email") String email);
