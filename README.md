@@ -172,7 +172,7 @@ public class CustomerDto {
     private String email;
 }
 ````
-Retrieved properties must have the same name in line with the counterparties defined with the entity; A DTO must provide a single constructor with all retrieved properties as constructor input arguments.
+Retrieved properties must have the same name in line with the counterparties defined in the entity; A DTO must provide a single constructor including all retrieved properties as  input arguments.
 
 
 
