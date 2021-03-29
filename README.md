@@ -145,3 +145,27 @@ JPA default fetch type
 
 to-many (one to many and many to many) default fetch type = lazy; one-one (one to one, and many to one) default fetch type = eager; 
 
+
+
+failed to lazily initialize a collection of role
+
+failed to lazily initialize a collection of role: com.ynz.demo.springjpatransaction.entities.Customer.orders, could not initialize proxy - no Session; 
+
+lazy loading means when orders are not accessed, then they are not loaded; when they are accessed, they are able to be loaded if there is an open session. 
+so this exception is due to orders are accessed outside a live session.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
