@@ -156,7 +156,23 @@ so this exception is due to orders are accessed outside a live session.
 
 
 
+Spring JPA Projection
 
+Class-based projection: it doesn't generate proxies, but doesn't suport nested projections. A derived query directly support class dto projection. 
+
+````
+Optional<CustomerDto> findByEmail(String email);
+
+@Getter
+@Setter
+@AllArgsConstructor
+public class CustomerDto {
+    private String firstName;
+    private String lastName;
+    private String email;
+}
+````
+Retrieved properties must have the same name in line with the counterparties defined with the entity; A DTO must provide a single constructor with all retrieved properties as constructor input arguments.
 
 
 
