@@ -175,6 +175,17 @@ public class CustomerDto {
 Retrieved properties must have the same name in line with the counterparties defined in the entity; A DTO must provide a single constructor including all retrieved properties as  input arguments.
 
 
+Spirng transction management
+
+The @Transactional annotation tells Spring that a transaction is required to execute this method. Spring generates a proxy object that wraps the decorated object and provides the required code to manage the transaction.
+
+The @Transactional annotation supports a set of attributes that you can use to customize the behavior. The most important ones are propagation, readOnly, rollbackFor, and noRollbackFor. Let’s take a closer look at each of them.
+
+
+The query that used a dto projection was 40% faster than the one that selected entities. So, it is better to use Dto projection than entity project for read-only operations.
+ref. to this interesting experimence [https://thorben-janssen.com/entities-dtos-use-projection/]
+
+
 
 
 
