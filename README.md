@@ -158,7 +158,11 @@ so this exception is due to orders are accessed outside a live session.
 
 Spring JPA Projection
 
-Class-based projection: it doesn't generate proxies, but doesn't suport nested projections. A derived query directly support class dto projection. 
+Interface-based, class-based, and dynamic projections. 
+
+Interface-based: support nested projections; Spring is in charge of data modle proxies inline with customer-interfaces. 
+
+Class-based projection: it doesn't generate proxies, but doesn't suport nested projections. A derived-query may directly support class dto projection. 
 
 ````
 Optional<CustomerDto> findByEmail(String email);
@@ -173,6 +177,19 @@ public class CustomerDto {
 }
 ````
 Retrieved properties must have the same name in line with the counterparties defined in the entity; A DTO must provide a single constructor including all retrieved properties as  input arguments.
+
+The query that used a dto projection was 40% faster than the entitiy projection. So, it is better to use Dto projection than entity projection for read-only operations.
+ref. to this interesting experimence [https://thorben-janssen.com/entities-dtos-use-projection/]
+
+The reason for the above, because the Entities are managed-beans within the persistence context, which constantly dirty check them and cost extra resources and performances for read-only queries. 
+
+Spirng transction management
+
+The @Transactional annotation tells Spring that a transaction is required to execute this method. Spring generates a proxy object that wraps the decorated object and provides the required code to manage the transaction.
+
+The @Transactional annotation supports a set of attributes that you can use to customize the behavior. The most important ones are propagation, readOnly, rollbackFor, and noRollbackFor. Let’s take a closer look at each of them.
+
+
 
 
 
