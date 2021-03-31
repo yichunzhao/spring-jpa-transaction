@@ -108,7 +108,24 @@ public class CustomerControllerIT extends AbstractTest {
                 () -> assertThat(statusCode).isEqualTo(HttpStatus.BAD_REQUEST),
                 () -> assertThat(errorMsg.getMessage()).contains("already existed")
         );
+    }
 
+    @Test
+    void givenCustomerWithoutFirstName_GetBadRequestHttpStatusAndErrorMsg() {
+        CustomerDto customerDto = CustomerDto.builder().email("mp@hotmail.com").firstName("")
+                .lastName("Peterson").build();
+
+        URI uri = builder.build().toUri();
+        HttpEntity<CustomerDto> request = new HttpEntity<>(customerDto);
+        ResponseEntity<ErrorMsgModel> response = this.template.postForEntity(uri, request, ErrorMsgModel.class);
+
+        HttpStatus statusCode = response.getStatusCode();
+        ErrorMsgModel errorMsg = response.getBody();
+
+        assertAll(
+                () -> assertThat(statusCode).isEqualTo(HttpStatus.BAD_REQUEST),
+                () -> assertThat(errorMsg.getMessage()).contains("customer must have a first name.")
+        );
     }
 
     @Test

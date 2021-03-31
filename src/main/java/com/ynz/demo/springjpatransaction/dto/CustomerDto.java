@@ -13,13 +13,12 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @Builder
 public class CustomerDto {
-    @NotBlank
+    @NotBlank(message = "customer must have a first name.")
     private String firstName;
 
-    @NotBlank
+    @NotBlank(message = "customer must have a last name.")
     private String lastName;
 
-    @NotBlank
-    @Email
+    @Email(message = "email address is not valid.")
     private String email;
 }

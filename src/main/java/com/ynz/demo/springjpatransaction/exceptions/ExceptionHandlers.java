@@ -3,14 +3,25 @@ package com.ynz.demo.springjpatransaction.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import javax.validation.ValidationException;
 
 @RestControllerAdvice
 public class ExceptionHandlers {
 
-    @ExceptionHandler(DuplicatedCustomerException.class)
-    public ResponseEntity<ErrorMsgModel> handleDuplicatedCustomerException(DuplicatedCustomerException e) {
+    @ExceptionHandler({DuplicatedCustomerException.class, ValidationException.class})
+    public ResponseEntity<ErrorMsgModel> handleDuplicatedCustomerException(RuntimeException e) {
+        ErrorMsgModel errorMsg = new ErrorMsgModel();
+        errorMsg.setMessage(e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMsg);
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ResponseEntity<ErrorMsgModel> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         ErrorMsgModel errorMsg = new ErrorMsgModel();
         errorMsg.setMessage(e.getMessage());
 
