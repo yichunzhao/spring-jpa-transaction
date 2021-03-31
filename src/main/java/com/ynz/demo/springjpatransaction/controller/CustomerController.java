@@ -31,12 +31,12 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping
-    public ResponseEntity<Void> createCustomer(@Validated @RequestBody Customer customer, UriComponentsBuilder builder) {
+    public ResponseEntity<CustomerDto> createCustomer(@Validated @RequestBody CustomerDto customerDto, UriComponentsBuilder builder) {
         log.info("create a customer.... ");
-        Customer created = customerService.createCustomer(customer);
+        Customer created = customerService.createCustomer(toCustomerEntity(customerDto));
         URI resultUri = builder.path("/api/customers/{email}").buildAndExpand(created.getEmail()).toUri();
 
-        return ResponseEntity.created(resultUri).build();
+        return ResponseEntity.created(resultUri).body(fromEntityToDto(created));
     }
 
     @GetMapping("{email}")
@@ -65,5 +65,19 @@ public class CustomerController {
         log.info("add customer an oder ...");
         return ResponseEntity.ok(customerService.addCustomerOrder(email, order));
     }
+
+    private Customer toCustomerEntity(CustomerDto customerDto) {
+        Customer customer = new Customer();
+        customer.setEmail(customerDto.getEmail());
+        customer.setFirstName(customerDto.getFirstName());
+        customer.setLastName(customerDto.getLastName());
+        return customer;
+    }
+
+    private CustomerDto fromEntityToDto(Customer customer) {
+        return CustomerDto.builder().firstName(customer.getFirstName()).lastName(customer.getLastName())
+                .email(customer.getEmail()).build();
+    }
+
 
 }

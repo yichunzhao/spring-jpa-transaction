@@ -1,7 +1,7 @@
 package com.ynz.demo.springjpatransaction.controller;
 
 import com.ynz.demo.springjpatransaction.dto.CustomerDto;
-import com.ynz.demo.springjpatransaction.entities.Customer;
+import com.ynz.demo.springjpatransaction.exceptions.ErrorMsgModel;
 import com.ynz.demo.springjpatransaction.util.AbstractTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,22 +67,48 @@ public class CustomerControllerIT extends AbstractTest {
     }
 
     @Test
-    void testCreatingCustomerWithoutOrders() {
-        Customer customer = super.createDummyCustomer();
+    void givenNonExistedCustomer_RegisterItInSystem() {
+        CustomerDto customer = super.createDummyCustomerDto();
 
         URI uri = UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port)
                 .pathSegment("api/customers").build().toUri();
 
-        HttpEntity<Customer> request = new HttpEntity<>(customer);
-        ResponseEntity<Void> response = this.template.postForEntity(uri, request, Void.class);
+        HttpEntity<CustomerDto> request = new HttpEntity<>(customer);
+        ResponseEntity<CustomerDto> response = this.template.postForEntity(uri, request, CustomerDto.class);
         URI location = response.getHeaders().getLocation();
+        CustomerDto created = response.getBody();
 
         assertAll(
                 () -> assertNotNull(response),
                 () -> assertNotNull(location),
                 () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED),
-                () -> assertThat(location.toString()).contains("api/customers/" + customer.getEmail())
+                () -> assertThat(location.toString()).contains("api/customers/" + customer.getEmail()),
+                () -> assertNotNull(created),
+                () -> assertEquals(created.getEmail(), "mb@hotmail.com"),
+                () -> assertEquals(created.getFirstName(), "Mike"),
+                () -> assertEquals(created.getLastName(), "Brown")
         );
+    }
+
+    @Test
+    @Sql("classpath:testdata.sql")
+    @Sql(value = "classpath:deleteTestData.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    void givenCustomerAlreadyRegistered_ThrowDuplicatedCustomerException() {
+        CustomerDto customerDto = CustomerDto.builder().email("mp@hotmail.com").firstName("Mia")
+                .lastName("Peterson").build();
+
+        URI uri = builder.build().toUri();
+        HttpEntity<CustomerDto> request = new HttpEntity<>(customerDto);
+        ResponseEntity<ErrorMsgModel> response = this.template.postForEntity(uri, request, ErrorMsgModel.class);
+
+        HttpStatus statusCode = response.getStatusCode();
+        ErrorMsgModel errorMsg = response.getBody();
+
+        assertAll(
+                () -> assertThat(statusCode).isEqualTo(HttpStatus.BAD_REQUEST),
+                () -> assertThat(errorMsg.getMessage()).contains("already existed")
+        );
+
     }
 
     @Test

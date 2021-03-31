@@ -1,5 +1,6 @@
 package com.ynz.demo.springjpatransaction.util;
 
+import com.ynz.demo.springjpatransaction.dto.CustomerDto;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import com.ynz.demo.springjpatransaction.entities.Order;
 import com.ynz.demo.springjpatransaction.entities.OrderItem;
@@ -27,6 +28,10 @@ public abstract class AbstractTest {
         customer.setFirstName("Mike");
         customer.setLastName("Brown");
         return customer;
+    }
+
+    protected CustomerDto createDummyCustomerDto() {
+        return new CustomerDto("Mike", "Brown", "mb@hotmail.com");
     }
 
 }
