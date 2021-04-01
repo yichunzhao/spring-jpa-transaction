@@ -94,7 +94,7 @@ class CustomerControllerTest extends AbstractTest {
                 .when()
                 .get(rootURI)
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.FOUND.value())
                 .body("$.size()", is(1));
     }
 
