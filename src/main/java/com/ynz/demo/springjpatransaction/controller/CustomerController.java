@@ -20,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -55,9 +56,13 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<Iterable<Customer>> findAllCustomer() {
+    public ResponseEntity<List<CustomerDto>> findAllCustomer() {
         log.info("find all customers ...");
-        return ResponseEntity.ok(customerService.findAllCustomers());
+
+        List<CustomerDto> customerList = new ArrayList<>();
+        customerService.findAllCustomers().forEach(customer -> customerList.add(fromEntityToDto(customer)));
+
+        return ResponseEntity.status(HttpStatus.FOUND).body(customerList);
     }
 
     @PutMapping("{email}")

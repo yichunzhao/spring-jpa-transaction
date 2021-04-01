@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.jdbc.Sql;
@@ -17,7 +19,10 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -166,6 +171,49 @@ public class CustomerControllerIT extends AbstractTest {
                 },
                 () -> assertEquals(customerDto.getFirstName(), "Mia"),
                 () -> assertEquals(customerDto.getLastName(), "Peterson")
+        );
+    }
+
+    @Test
+    @Sql("classpath:testdata.sql")
+    @Sql(value = "classpath:deleteTestData.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    void testFindAllCustomers() {
+        URI uri = builder.build().toUri();
+
+        //this.template.getForEntity(uri, CustomerDto[].class);
+        ResponseEntity<List<CustomerDto>> response = this.template.exchange(uri, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<CustomerDto>>() {
+                });
+
+        List<CustomerDto> customerDtoList = response.getBody();
+
+        List<String> firstNames = Arrays.asList("Mike", "Mia");
+        boolean matched = customerDtoList.stream().map(c -> c.getFirstName()).collect(toList()).equals(firstNames);
+
+        assertAll(
+                () -> assertThat(customerDtoList).hasSize(2),
+                () -> assertThat(matched).isTrue()
+        );
+    }
+
+    @Test
+    @Sql("classpath:testdata.sql")
+    @Sql(value = "classpath:deleteTestData.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    void testFindListCustomerByArray() {
+        URI uri = builder.build().toUri();
+
+        ResponseEntity<CustomerDto[]> response = this.template.getForEntity(uri, CustomerDto[].class);
+
+        CustomerDto[] customerDtoList = response.getBody();
+        CustomerDto[] emptyArray = {};
+
+        List<String> firstNames = Arrays.asList("Mike", "Mia");
+        boolean matched = Arrays.stream(customerDtoList != null ? customerDtoList : emptyArray)
+                .map(c -> c.getFirstName()).collect(toList()).equals(firstNames);
+
+        assertAll(
+                () -> assertThat(customerDtoList).hasSize(2),
+                () -> assertThat(matched).isTrue()
         );
     }
 
