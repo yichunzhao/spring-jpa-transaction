@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
- * A client-side controller integration test, via a real sever to test the http request and response.
+ * A client-side controller integration test, via a real sever and a real database to test the http request and response.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CustomerControllerIT extends AbstractTest {
@@ -70,8 +70,7 @@ public class CustomerControllerIT extends AbstractTest {
     void givenNonExistedCustomer_RegisterItInSystem() {
         CustomerDto customer = super.createDummyCustomerDto();
 
-        URI uri = UriComponentsBuilder.newInstance().scheme("http").host("localhost").port(port)
-                .pathSegment("api/customers").build().toUri();
+        URI uri = builder.build().toUri();
 
         HttpEntity<CustomerDto> request = new HttpEntity<>(customer);
         ResponseEntity<CustomerDto> response = this.template.postForEntity(uri, request, CustomerDto.class);
@@ -125,6 +124,24 @@ public class CustomerControllerIT extends AbstractTest {
         assertAll(
                 () -> assertThat(statusCode).isEqualTo(HttpStatus.BAD_REQUEST),
                 () -> assertThat(errorMsg.getMessage()).contains("customer must have a first name.")
+        );
+    }
+
+    @Test
+    void whenCustomerGivingInvalidEmail_ThenItGetBadRequestAndErrorMsg() {
+        CustomerDto customerDto = CustomerDto.builder().email("hotmail.com").firstName("")
+                .lastName("Peterson").build();
+
+        URI uri = builder.build().toUri();
+        HttpEntity<CustomerDto> request = new HttpEntity<>(customerDto);
+        ResponseEntity<ErrorMsgModel> response = this.template.postForEntity(uri, request, ErrorMsgModel.class);
+
+        HttpStatus statusCode = response.getStatusCode();
+        ErrorMsgModel errorMsg = response.getBody();
+
+        assertAll(
+                () -> assertThat(statusCode).isEqualTo(HttpStatus.BAD_REQUEST),
+                () -> assertThat(errorMsg.getMessage()).contains("email address is not valid.")
         );
     }
 

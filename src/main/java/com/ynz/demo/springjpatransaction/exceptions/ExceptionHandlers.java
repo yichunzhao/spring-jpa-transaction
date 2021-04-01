@@ -7,12 +7,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.validation.ValidationException;
-
 @RestControllerAdvice
 public class ExceptionHandlers {
 
-    @ExceptionHandler({DuplicatedCustomerException.class, ValidationException.class})
+    @ExceptionHandler(DuplicatedCustomerException.class)
     public ResponseEntity<ErrorMsgModel> handleDuplicatedCustomerException(RuntimeException e) {
         ErrorMsgModel errorMsg = new ErrorMsgModel();
         errorMsg.setMessage(e.getMessage());
@@ -20,7 +18,7 @@ public class ExceptionHandlers {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMsg);
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorMsgModel> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         ErrorMsgModel errorMsg = new ErrorMsgModel();
         errorMsg.setMessage(e.getMessage());
