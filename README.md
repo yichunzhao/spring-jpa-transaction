@@ -189,9 +189,11 @@ The @Transactional annotation tells Spring that a transaction is required to exe
 
 The @Transactional annotation supports a set of attributes that you can use to customize the behavior. The most important ones are propagation, readOnly, rollbackFor, and noRollbackFor. Let’s take a closer look at each of them.
 
+Hibernate lazily loaded entity life-cycle
 
+query customer-order from the order side, and customer is forced to be lazily loaded;  debugging shows the customer is loaded in the persistence context as a hibernate proxy customer; for the reading operation, hibernate creates managed beans first.  
 
-
+![image](https://user-images.githubusercontent.com/17804600/113417568-f435bb80-93c3-11eb-9e51-4cebda2fdac8.png)
 
 
 
