@@ -1,6 +1,7 @@
 package com.ynz.demo.springjpatransaction.controller;
 
 import com.ynz.demo.springjpatransaction.dto.CustomerDto;
+import com.ynz.demo.springjpatransaction.dto.OrderDto;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import com.ynz.demo.springjpatransaction.entities.Order;
 import com.ynz.demo.springjpatransaction.services.CustomerService;
@@ -17,14 +18,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 
 /**
  * WebMvcTest init. a tailored application context, but enough only for testing controller layer.
  * <p>
- * MockMvc is decorated by a RestAssuredMockMvc
+ * MockMvc is decorated by a RestAssuredMockMvc;
  */
 @WebMvcTest(CustomerController.class)
 class CustomerControllerTest extends AbstractTest {
@@ -164,6 +167,22 @@ class CustomerControllerTest extends AbstractTest {
                 .statusCode(200)
                 .body("orders.size()", is(1))
                 .body("orders[0].orderItems.size()", is(2));
+    }
+
+    @Test
+    void givenCustomerEmail_FindItsOrders() {
+
+        List<OrderDto> orders = Arrays.asList(createDummyOrderDto());
+        Mockito.when(customerService.findCustomerOrderByEmail(any(String.class))).thenReturn(orders);
+
+        String target = "mb@hotmail.com";
+
+        RestAssuredMockMvc.given().contentType(ContentType.JSON)
+                .when()
+                .get(rootURI + "/{email}/orders", target)
+                .then()
+                .statusCode(is(HttpStatus.FOUND.value()))
+                .body("orders", hasSize(1));
     }
 
 }

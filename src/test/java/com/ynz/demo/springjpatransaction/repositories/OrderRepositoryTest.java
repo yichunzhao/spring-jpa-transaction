@@ -1,9 +1,10 @@
 package com.ynz.demo.springjpatransaction.repositories;
 
-import com.ynz.demo.springjpatransaction.util.AbstractTest;
+import com.ynz.demo.springjpatransaction.dto.OrderDto;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import com.ynz.demo.springjpatransaction.entities.Order;
 import com.ynz.demo.springjpatransaction.entities.OrderItem;
+import com.ynz.demo.springjpatransaction.util.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,13 +58,11 @@ class OrderRepositoryTest extends AbstractTest {
         //persist a customer and his order in database
         testEntityManager.persistAndFlush(customer);
 
-        List<Order> found = orderRepository.findByCustomerEmail(customer.getEmail());
+        List<OrderDto> found = orderRepository.findByCustomerEmail(customer.getEmail());
         assertAll(
                 () -> assertNotNull(found),
                 () -> assertNotNull(found.get(0)),
-                () -> assertNotNull(found.get(0).getOrderItems()),
-                () -> assertThat(found, hasSize(1)),
-                () -> assertThat(found.get(0).getOrderItems(), hasSize(2))
+                () -> assertThat(found, hasSize(1))
         );
     }
 
@@ -72,13 +71,13 @@ class OrderRepositoryTest extends AbstractTest {
         Customer customer = createDummyCustomer();
         testEntityManager.persistAndFlush(customer);
 
-        List<Order> found = orderRepository.findByCustomerEmail(customer.getEmail());
+        List<OrderDto> found = orderRepository.findByCustomerEmail(customer.getEmail());
         assertThat(found, empty());
     }
 
     @Test
     void whenFindCustomerEmailIsNull_ItReturnsEmpty() {
-        List<Order> found = orderRepository.findByCustomerEmail(null);
+        List<OrderDto> found = orderRepository.findByCustomerEmail(null);
         assertThat(found, empty());
     }
 

@@ -1,6 +1,7 @@
 package com.ynz.demo.springjpatransaction.controller;
 
 import com.ynz.demo.springjpatransaction.dto.CustomerDto;
+import com.ynz.demo.springjpatransaction.dto.OrderDto;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import com.ynz.demo.springjpatransaction.entities.Order;
 import com.ynz.demo.springjpatransaction.services.CustomerService;
@@ -48,9 +49,9 @@ public class CustomerController {
     }
 
     @GetMapping(value = "{email}/orders")
-    public ResponseEntity<List<Order>> findCustomerOrderByEmail(@PathVariable("email") String email) {
+    public ResponseEntity<List<OrderDto>> findCustomerOrderByEmail(@PathVariable("email") String email) {
         log.info("find a customer's orders by its Email " + email);
-        List<Order> orderList = customerService.findCustomerOrderByEmail(email);
+        List<OrderDto> orderList = customerService.findCustomerOrderByEmail(email);
 
         return ResponseEntity.status(HttpStatus.FOUND).body(orderList);
     }

@@ -1,6 +1,7 @@
 package com.ynz.demo.springjpatransaction.repositories;
 
 import com.ynz.demo.springjpatransaction.dto.CustomerDto;
+import com.ynz.demo.springjpatransaction.dto.OrderDto;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import com.ynz.demo.springjpatransaction.entities.Order;
 import com.ynz.demo.springjpatransaction.util.AbstractTest;
@@ -64,7 +65,7 @@ public class CustomerRepoLazyTest extends AbstractTest {
     @Transactional
     void loadOrderCustomerFromOrderManyToOneSide() {
         log.info("find order by customer email from db");
-        List<Order> orderList = orderRepository.findByCustomerEmail("mb@hotmail.com");
+        List<OrderDto> orderList = orderRepository.findByCustomerEmail("mb@hotmail.com");
         assertThat(orderList, hasSize(1));
     }
 

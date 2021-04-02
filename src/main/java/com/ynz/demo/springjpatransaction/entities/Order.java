@@ -10,6 +10,7 @@ import lombok.Setter;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,12 +37,12 @@ public class Order {
     @Column(name = "OffSet_Date_Time", columnDefinition = "TIME WITH TIME ZONE")
     private OffsetDateTime creationDateTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "FK_CUSTOMER")
     @JsonIgnore
     private Customer customer;
 
-    @OneToMany(mappedBy = "order", targetEntity = OrderItem.class, cascade = {CascadeType.PERSIST, CascadeType.DETACH}, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", targetEntity = OrderItem.class, cascade = {CascadeType.PERSIST, CascadeType.DETACH})
     private Set<OrderItem> orderItems = new HashSet<>();
 
     private UUID givenOrderId;

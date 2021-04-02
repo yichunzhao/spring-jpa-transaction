@@ -1,8 +1,10 @@
 package com.ynz.demo.springjpatransaction.controller;
 
 import com.ynz.demo.springjpatransaction.dto.CustomerDto;
+import com.ynz.demo.springjpatransaction.dto.OrderDto;
 import com.ynz.demo.springjpatransaction.exceptions.ErrorMsgModel;
 import com.ynz.demo.springjpatransaction.util.AbstractTest;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * A client-side controller integration test, via a real sever and a real database to test the http request and response.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Slf4j
 public class CustomerControllerIT extends AbstractTest {
 
     @Autowired
@@ -72,6 +75,7 @@ public class CustomerControllerIT extends AbstractTest {
     }
 
     @Test
+    @Sql(value = "classpath:deleteJohn.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     void givenNonExistedCustomer_RegisterItInSystem() {
         CustomerDto customer = super.createDummyCustomerDto();
 
@@ -88,9 +92,9 @@ public class CustomerControllerIT extends AbstractTest {
                 () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED),
                 () -> assertThat(location.toString()).contains("api/customers/" + customer.getEmail()),
                 () -> assertNotNull(created),
-                () -> assertEquals(created.getEmail(), "mb@hotmail.com"),
-                () -> assertEquals(created.getFirstName(), "Mike"),
-                () -> assertEquals(created.getLastName(), "Brown")
+                () -> assertEquals(created.getEmail(), "js@hotmail.com"),
+                () -> assertEquals(created.getFirstName(), "John"),
+                () -> assertEquals(created.getLastName(), "Smith")
         );
     }
 
@@ -214,6 +218,28 @@ public class CustomerControllerIT extends AbstractTest {
         assertAll(
                 () -> assertThat(customerDtoList).hasSize(2),
                 () -> assertThat(matched).isTrue()
+        );
+    }
+
+    @Test
+    @Sql("classpath:testdata.sql")
+    @Sql(value = "classpath:deleteTestData.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+    void givenCustomerEmail_ReturnItsOrders() {
+        log.info("Given customer email and find its orders.");
+
+        String target = "mb@hotmail.com";
+        URI uri = builder.pathSegment("{email}/orders").buildAndExpand(target).toUri();
+
+        log.info("URI: " + uri);
+        ResponseEntity<OrderDto[]> response = this.template.exchange(uri, HttpMethod.GET, null, OrderDto[].class);
+
+        HttpStatus httpStatus = response.getStatusCode();
+        OrderDto[] orders = response.getBody();
+        List<OrderDto> orderList = Arrays.asList(orders);
+
+        assertAll(
+                () -> assertThat(httpStatus).isEqualTo(HttpStatus.FOUND),
+                () -> assertThat(orderList).hasSize(2)
         );
     }
 

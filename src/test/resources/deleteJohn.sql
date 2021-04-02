@@ -1,0 +1,1 @@
+DELETE FROM CUSTOMER c WHERE c.email='js@hotmail.com';

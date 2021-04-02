@@ -1,6 +1,7 @@
 package com.ynz.demo.springjpatransaction.services;
 
 import com.ynz.demo.springjpatransaction.dto.CustomerDto;
+import com.ynz.demo.springjpatransaction.dto.OrderDto;
 import com.ynz.demo.springjpatransaction.entities.Customer;
 import com.ynz.demo.springjpatransaction.entities.Order;
 import com.ynz.demo.springjpatransaction.exceptions.DuplicatedCustomerException;
@@ -35,16 +36,18 @@ public class CustomerService {
                         .append(email).append(" is not existed").toString()));
     }
 
-    public List<Order> findCustomerOrderByEmail(String email) {
+    @Transactional
+    public List<OrderDto> findCustomerOrderByEmail(String email) {
         log.info("find a customer's order by its email.");
         findCustomerByEmail(email);
 
-        return orderRepository.findByCustomerEmail(email);
+        log.info("find orders by a customer email .......");
+        List<OrderDto> orders = orderRepository.findByCustomerEmail(email);
+        return orders;
     }
 
     public Customer createCustomer(Customer customer) {
         log.info("create a customer.");
-
         Customer persisted;
 
         try {
