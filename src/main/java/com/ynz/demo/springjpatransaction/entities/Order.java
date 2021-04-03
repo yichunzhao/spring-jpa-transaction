@@ -18,6 +18,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.PositiveOrZero;
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,6 +48,9 @@ public class Order {
     private Set<OrderItem> orderItems = new HashSet<>();
 
     private UUID givenOrderId;
+
+    @PositiveOrZero
+    private BigDecimal totalAmount;
 
     public void addOderItem(@NonNull OrderItem item) {
         orderItems.add(item);
